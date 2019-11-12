@@ -4,13 +4,20 @@ import "./ToDoListItem.css";
 class ToDoListItem extends React.Component{
     constructor(){
         super();
+        this.state = {
+            done: false,
+        };
         this.onLabelClick = () => {
-            console.log(`Done: ${this.props.label}`);
+            this.setState({done: true})
         }
     }
 
     render(){
         const { label, important = false } = this.props;
+        const { done } = this.state;
+        let classNames = done ?
+            'todo-list-item done':
+            'todo-list-item';
 
         const style = {
             color: important ? 'tomato' : 'black',
@@ -18,7 +25,7 @@ class ToDoListItem extends React.Component{
         };
 
         return (
-            <span className='todo-list-item'>
+            <span className={classNames}>
             <span style={style}
                   className='todo-list-item-label'
                   onClick={this.onLabelClick}
