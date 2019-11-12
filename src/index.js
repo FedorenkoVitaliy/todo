@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom';
 const App = () => {
     return (
         <div>
-            <AppHeader/>
-            <SearchPanel/>
-            <TodoList/>
+            <AppHeader />
+            <SearchPanel />
+            <TodoList />
         </div>
     );
 };
@@ -16,14 +16,24 @@ const AppHeader = () => {
 };
 
 const SearchPanel = () => {
-    return <input type="text" placeholder="search"/>;
+    const searchText = 'type here to search';
+    const searchStyle = {
+        padding: '5px'
+    };
+    return <input
+        type="text"
+        placeholder={searchText}
+        className="input"
+        style={searchStyle}
+    />;
 };
 
 const TodoList = () => {
+    const items = ['Learn React', 'Build Awesome App']
     return(
         <ul>
-            <li>Learn React</li>
-            <li>Build Awesome App</li>
+            <li>{items[0]}</li>
+            <li>{items[1]}</li>
         </ul>
     )
 };
