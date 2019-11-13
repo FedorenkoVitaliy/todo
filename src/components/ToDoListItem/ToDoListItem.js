@@ -10,11 +10,19 @@ class ToDoListItem extends React.Component{
         };
 
         this.onLabelClick = () => {
-            this.setState({done: true})
+            this.setState(({done}) => {
+                return{
+                    done: !done
+                }
+            })
         };
 
         this.toggleImportant = () => {
-            this.setState({important: !this.state.important})
+            this.setState(({important}) => {
+                return {
+                    important: !important
+                }
+            });
         };
     }
 
