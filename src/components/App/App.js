@@ -5,7 +5,7 @@ import SearchPanel from "../SearchPanel";
 import ToDoList from "../ToDoList";
 import './App.css';
 
-class App extends Component{
+export default class App extends Component{
     constructor(){
         super();
         this.state = {
@@ -28,6 +28,19 @@ class App extends Component{
         }
     }
 
+    deleteItem = (id) => {
+        this.setState(({todoData}) => {
+            const idx = todoData.findIndex((el) => el.id === id);
+
+            return {
+                todoData: [
+                    ...todoData.slice(0, idx),
+                    ...todoData.slice(idx + 1)
+                ]
+            }
+        })
+    };
+
     render(){
         return (
             <div className="todo-app">
@@ -37,11 +50,9 @@ class App extends Component{
                     <ItemStatusFilter />
                 </div>
                 <ToDoList todos={this.state.todoData}
-                          onDeleted={(id) => console.log(id)}
+                          onDeleted={this.deleteItem}
                 />
             </div>
         );
     }
 };
-
-export default App;
