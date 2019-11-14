@@ -3,6 +3,7 @@ import AppHeader from "../AppHeader";
 import ItemStatusFilter from "../ItemStatusFilter"
 import SearchPanel from "../SearchPanel";
 import ToDoList from "../ToDoList";
+import AddItemForm from "../AddItem";
 import './App.css';
 
 class App extends Component{
@@ -25,8 +26,34 @@ class App extends Component{
                     important: false,
                 }
             ]
-        }
+        };
+        this.onItemAdded = this.onItemAdded.bind(this);
+        this.onHandleChange = this.onHandleChange.bind(this);
     }
+
+    onHandleChange = (text) => {
+        console.log(text);
+    };
+
+    onItemAdded = (text) =>{
+        //event.preventDefault();
+        //create id
+
+        const id = this.state.todoData.length;
+        console.log(id);
+        //add element
+        let newItem = {
+            id: id,
+            label: text,
+            important: false,
+        };
+
+        this.setState(({todoData}) => {
+            return {
+                todoData: [...todoData, newItem]
+            };
+        });
+    };
 
     render(){
         return (
@@ -38,6 +65,9 @@ class App extends Component{
                 </div>
                 <ToDoList todos={this.state.todoData}
                           onDeleted={(id) => console.log(id)}
+                />
+                <AddItemForm onHandleChange={this.onHandleChange}
+                             onItemAdded={this.onItemAdded}
                 />
             </div>
         );
