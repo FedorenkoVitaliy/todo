@@ -4,7 +4,9 @@ import "./AddItemForm.css";
 class AddItemForm extends React.Component{
     constructor(){
         super();
-        this.state = {};
+        this.state = {
+            newTask: ''
+        };
 
     }
 
@@ -16,6 +18,7 @@ class AddItemForm extends React.Component{
     onSubmit = (e) => {
         e.preventDefault();
         this.props.onItemAdded(this.state.newTask || '');
+        this.setState({newTask: ''})
     };
 
     render(){
@@ -25,6 +28,7 @@ class AddItemForm extends React.Component{
             >
                 <input type="text"
                        className='form-control'
+                       value={this.state.newTask||''}
                        name='newTask'
                        onChange={this.onHandleChange}
                        placeholder='What need to be done'
