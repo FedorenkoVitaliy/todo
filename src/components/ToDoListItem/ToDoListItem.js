@@ -1,64 +1,36 @@
 import React from 'react';
 import "./ToDoListItem.css";
 
-class ToDoListItem extends React.Component{
-    constructor(){
-        super();
-        this.state = {
-            done: false,
-            important: false,
-        };
-
-        this.onLabelClick = () => {
-            this.setState(({done}) => {
-                return{
-                    done: !done
-                }
-            })
-        };
-
-        this.toggleImportant = () => {
-            this.setState(({important}) => {
-                return {
-                    important: !important
-                }
-            });
-        };
+const ToDoListItem = ({id, label, onToggleStatus, done, important}) => {
+    let classNames = 'todo-list-item';
+    if(done){
+        classNames += ' done'
+    }
+    if(important){
+        classNames += ' important'
     }
 
-    render(){
-        const { label, onDeleted } = this.props;
-        const { done, important } = this.state;
-        let classNames = 'todo-list-item';
-        if(done){
-            classNames += ' done'
-        }
-        if(important){
-            classNames += ' important'
-        }
-
-        return (
-            <span className={classNames}>
-            <span className='todo-list-item-label'
-                  onClick={this.onLabelClick}
-            >
-                { label }
-            </span>
-            <button type='button'
-                    className='btn btn-outline-success btn-sm float-right'
-                    onClick={this.toggleImportant}
-            >
-                <i className='fa fa-exclamation'/>
-            </button>
-            <button type='button'
-                    className='btn btn-outline-danger btn-sm float-right'
-                    onClick={onDeleted}
-            >
-                <i className='fa fa-trash-o'/>
-            </button>
+    return (
+        <span className={classNames}>
+        <span className='todo-list-item-label'
+              onClick={() => onToggleStatus(id, 'done')}
+        >
+            { label }
         </span>
-        );
-    }
-}
+        <button type='button'
+                className='btn btn-outline-success btn-sm float-right'
+                onClick={() => onToggleStatus(id, 'important')}
+        >
+            <i className='fa fa-exclamation'/>
+        </button>
+        <button type='button'
+                className='btn btn-outline-danger btn-sm float-right'
+                onClick={() => onToggleStatus(id,'delete')}
+        >
+            <i className='fa fa-trash-o'/>
+        </button>
+    </span>
+    );
+};
 
 export default ToDoListItem;
