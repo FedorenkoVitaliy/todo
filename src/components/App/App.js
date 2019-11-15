@@ -7,40 +7,30 @@ import AddItemForm from "../AddItem";
 import './App.css';
 
 class App extends Component{
-    constructor(){
-        super();
-        this.state = {
-            todoData: [
-                {
-                    id:1,
-                    label: 'Drink Coffee',
-                    important: false,
-                },
-                {   id:2,
-                    label: 'Build Awesome App',
-                    important: true,
-                },
-                {
-                    id:3,
-                    label: 'Have a lunch',
-                    important: false,
-                }
-            ]
-        };
-    }
+    maxId = 100;
+    state = {
+        todoData: [
+            this.createNewElement('Drink Coffee'),
+            this.createNewElement('Build Awesome App'),
+            this.createNewElement('Have a lunch'),
+        ]
+    };
 
     onHandleChange = (text) => {
         console.log(text);
     };
 
-    onItemAdded = (text) =>{
-        const id = this.state.todoData.length;
-
-        let newItem = {
-            id: id,
-            label: text,
+    createNewElement(label) {
+        return{
+            label,
+            id: this.maxId++,
+            done: false,
             important: false,
-        };
+        }
+    };
+
+    onItemAdded = (text) =>{
+        let newItem = this.createNewElement(text);
 
         this.setState(({todoData}) => {
             return {
@@ -49,41 +39,66 @@ class App extends Component{
         });
     };
 
-    onItemDeleted = (id) => {
-        const idx = this.state.todoData.findIndex((el) => el.id === id);
+    getIndex = (id) => this.state.todoData.findIndex((el) => el.id === id);
+
+    deleteItem = (id) => {
+        const idx = this.getIndex(id);
         this.setState(({todoData}) =>{
             return{
-                todoData: [...todoData.slice(0, idx), ...todoData.slice(idx+1)]
+                todoData: [...todoData.slice(0, idx), ...todoData.slice(idx + 1)]
             }
         })
     };
 
-    onToggleDone = (id) => {
-        console.log('done', id);
+    toggleProperty = (arr, id, propName) => {
+        const idx = this.getIndex(id);
+        const oldItem = arr[idx];
+        const newItem = {...oldItem, [propName]: !oldItem[propName]};
+
+        return[
+            ...arr.slice(0, idx),
+            newItem,
+            ...arr.slice(idx + 1)
+        ];
     };
 
-    onToggleImportant = (id) => {
-        console.log('important', id);
+    toggleDone = (id) => {
+        this.setState(({todoData}) =>{
+            return{
+                todoData:  this.toggleProperty(todoData, id, 'done')
+            };
+        })
+    };
+
+    toggleImportant = (id) => {
+        this.setState(({todoData}) =>{
+            return{
+                todoData:  this.toggleProperty(todoData, id, 'important')
+            };
+        })
     };
 
     onToggleStatus = (id, action) =>{
         switch(action){
-            case 'delete' : this.onItemDeleted(id); break;
-            case 'done' : this.onToggleDone(id); break;
-            case 'important' : this.onToggleImportant(id); break;
+            case 'delete' : this.deleteItem(id); break;
+            case 'done' : this.toggleDone(id); break;
+            case 'important' : this.toggleImportant(id); break;
             default:  break;
         }
     };
 
     render(){
+        const {todoData} = this.state;
+        const doneCount = todoData.filter(item => item.done===true).length;
+        const todoCount = todoData.length - doneCount;
         return (
             <div className="todo-app">
-                <AppHeader toDo = {1} done = {3} />
+                <AppHeader toDo = {todoCount} done = {doneCount} />
                 <div className="top-panel d-flex">
                     <SearchPanel />
                     <ItemStatusFilter />
                 </div>
-                <ToDoList todos = {this.state.todoData}
+                <ToDoList todos = {todoData}
                           onToggleStatus = {this.onToggleStatus}
                 />
                 <AddItemForm onHandleChange={this.onHandleChange}
