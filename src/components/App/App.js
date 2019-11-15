@@ -16,10 +16,6 @@ class App extends Component{
         ]
     };
 
-    onHandleChange = (text) => {
-        console.log(text);
-    };
-
     createNewElement(label) {
         return{
             label,
