@@ -27,8 +27,6 @@ class App extends Component{
                 }
             ]
         };
-        this.onItemAdded = this.onItemAdded.bind(this);
-        this.onHandleChange = this.onHandleChange.bind(this);
     }
 
     onHandleChange = (text) => {
@@ -36,12 +34,8 @@ class App extends Component{
     };
 
     onItemAdded = (text) =>{
-        //event.preventDefault();
-        //create id
-
         const id = this.state.todoData.length;
-        console.log(id);
-        //add element
+
         let newItem = {
             id: id,
             label: text,
@@ -55,16 +49,42 @@ class App extends Component{
         });
     };
 
+    onItemDeleted = (id) => {
+        const idx = this.state.todoData.findIndex((el) => el.id === id);
+        this.setState(({todoData}) =>{
+            return{
+                todoData: [...todoData.slice(0, idx), ...todoData.slice(idx+1)]
+            }
+        })
+    };
+
+    onToggleDone = (id) => {
+        console.log('done', id);
+    };
+
+    onToggleImportant = (id) => {
+        console.log('important', id);
+    };
+
+    onToggleStatus = (id, action) =>{
+        switch(action){
+            case 'delete' : this.onItemDeleted(id); break;
+            case 'done' : this.onToggleDone(id); break;
+            case 'important' : this.onToggleImportant(id); break;
+            default:  break;
+        }
+    };
+
     render(){
         return (
             <div className="todo-app">
-                <AppHeader toDo={1} done={3} />
+                <AppHeader toDo = {1} done = {3} />
                 <div className="top-panel d-flex">
                     <SearchPanel />
                     <ItemStatusFilter />
                 </div>
-                <ToDoList todos={this.state.todoData}
-                          onDeleted={(id) => console.log(id)}
+                <ToDoList todos = {this.state.todoData}
+                          onToggleStatus = {this.onToggleStatus}
                 />
                 <AddItemForm onHandleChange={this.onHandleChange}
                              onItemAdded={this.onItemAdded}
