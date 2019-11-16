@@ -15,7 +15,7 @@ class App extends Component{
             this.createNewElement('Have a lunch'),
         ],
         filterBy: undefined,
-        searchBy: '',
+        term: '',
     };
 
     createNewElement(label) {
@@ -89,15 +89,27 @@ class App extends Component{
        this.setState({filterBy: param});
     };
 
-    onSearch = (param) => {
-        this.setState({searchBy: param.toLowerCase()});
+    onSearchChange = (term) => {
+        this.setState({term});
     };
 
+    search(items, term){
+        return (
+            term.length > 0?
+            items.filter((elem) => {
+                return elem.label
+                    .toLowerCase()
+                    .indexOf(term.toLowerCase()) > -1;
+            }):
+            items
+        );
+    }
+
     render(){
-        const {todoData, filterBy} = this.state;
+        const {todoData, filterBy, term} = this.state;
         const doneCount = todoData.filter(item => item.done===true).length;
         const todoCount = todoData.length - doneCount;
-        const searchedList = todoData.filter((elem) => elem.label.toLowerCase().startsWith(this.state.searchBy));
+        const searchedList = this.search(todoData, term);
         const filteredList = filterBy===undefined?
             searchedList:
             searchedList.filter((elem) => elem.done===filterBy);
@@ -105,7 +117,7 @@ class App extends Component{
             <div className="todo-app">
                 <AppHeader toDo = {todoCount} done = {doneCount} />
                 <div className="top-panel d-flex">
-                    <SearchPanel onSearch={this.onSearch}/>
+                    <SearchPanel onSearch={this.onSearchChange}/>
                     <ItemStatusFilter onFilter={this.onFilter}/>
                 </div>
                 <ToDoList todos = {filteredList}
