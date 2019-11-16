@@ -7,7 +7,6 @@ class AddItemForm extends React.Component{
         this.state = {
             newTask: ''
         };
-
     }
 
     onHandleChange = (e) => {

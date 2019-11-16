@@ -13,7 +13,9 @@ class App extends Component{
             this.createNewElement('Drink Coffee'),
             this.createNewElement('Build Awesome App'),
             this.createNewElement('Have a lunch'),
-        ]
+        ],
+        filterBy: undefined,
+        searchBy: '',
     };
 
     createNewElement(label) {
@@ -83,18 +85,30 @@ class App extends Component{
         }
     };
 
+    onFilter = (param) => {
+       this.setState({filterBy: param});
+    };
+
+    onSearch = (param) => {
+        this.setState({searchBy: param.toLowerCase()});
+    };
+
     render(){
-        const {todoData} = this.state;
+        const {todoData, filterBy} = this.state;
         const doneCount = todoData.filter(item => item.done===true).length;
         const todoCount = todoData.length - doneCount;
+        const searchedList = todoData.filter((elem) => elem.label.toLowerCase().startsWith(this.state.searchBy));
+        const filteredList = filterBy===undefined?
+            searchedList:
+            searchedList.filter((elem) => elem.done===filterBy);
         return (
             <div className="todo-app">
                 <AppHeader toDo = {todoCount} done = {doneCount} />
                 <div className="top-panel d-flex">
-                    <SearchPanel />
-                    <ItemStatusFilter />
+                    <SearchPanel onSearch={this.onSearch}/>
+                    <ItemStatusFilter onFilter={this.onFilter}/>
                 </div>
-                <ToDoList todos = {todoData}
+                <ToDoList todos = {filteredList}
                           onToggleStatus = {this.onToggleStatus}
                 />
                 <AddItemForm onHandleChange={this.onHandleChange}
