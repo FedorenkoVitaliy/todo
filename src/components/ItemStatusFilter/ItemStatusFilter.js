@@ -2,48 +2,35 @@ import React, {Component} from 'react';
 import './ItemStatusFilter.css'
 
 export default class ItemStatusFilter extends Component{
-    constructor(){
-        super();
-        this.state={
-            buttons: [
-                {
-                    id:0,
-                    value: 'All',
-                    done: undefined
-                },
-                {
-                    id:1,
-                    value: 'Done',
-                    done: true,
-                },
-                {
-                    id:2,
-                    value: 'Active',
-                    done: false,
-                },
-            ],
-            filterBy: 'All'
-        }
-    }
-
-    changeFilter(param) {
-        this.setState({filterBy: param.value})
-        this.props.onFilter(param.done);
+    state={
+        buttons: [
+            {
+                name: 'all',
+                label: 'All',
+            },
+            {
+                name: 'done',
+                label: 'Done',
+            },
+            {
+                name: 'active',
+                label: 'Active',
+            },
+        ],
     };
 
     render(){
-        const {buttons, filterBy} = this.state;
-        const filterElem = buttons.map((elem) => {
-            const classes = filterBy===elem.value?
-                'btn btn-info':
-                'btn btn-outline-secondary';
+        const filterElem = this.state.buttons.map(({name, label}) => {
+            const clazz = this.props.filterBy===name?
+                'btn-info':
+                'btn-outline-secondary';
             return(
-                <button key={elem.id}
+                <button key={name}
                         type='button'
-                        className={classes}
-                        onClick={() => this.changeFilter(elem)}
+                        className={`btn ${clazz}`}
+                        onClick={() => this.props.onFilterChange(label)}
                 >
-                    {elem.value}
+                    {label}
                 </button>
             );
         });

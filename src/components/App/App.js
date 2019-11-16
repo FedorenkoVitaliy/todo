@@ -14,7 +14,7 @@ class App extends Component{
             this.createNewElement('Build Awesome App'),
             this.createNewElement('Have a lunch'),
         ],
-        filterBy: undefined,
+        filterBy: 'all',
         searchBy: '',
     };
 
@@ -85,30 +85,50 @@ class App extends Component{
         }
     };
 
-    onFilter = (param) => {
-       this.setState({filterBy: param});
+    onSearchChange = (searchBy) => {
+        this.setState({searchBy});
+    };
+    onFilterChange = (filterBy) => {
+        this.setState({filterBy});
     };
 
-    onSearch = (param) => {
-        this.setState({searchBy: param.toLowerCase()});
-    };
+    search(items, term){
+        return (
+            term.length > 0?
+            items.filter((elem) => {
+                return elem.label
+                    .toLowerCase()
+                    .indexOf(term.toLowerCase()) > -1;
+            }):
+            items
+        );
+    }
+
+    filter(items, filter){
+        switch (filter) {
+            case 'all': return items;
+            case 'active': return items.filter((item) => !item.done);
+            case 'done': return items.filter((item) => item.done);
+            default: return items;
+        }
+    }
 
     render(){
-        const {todoData, filterBy} = this.state;
+        const {todoData, filterBy, searchBy} = this.state;
         const doneCount = todoData.filter(item => item.done===true).length;
         const todoCount = todoData.length - doneCount;
-        const searchedList = todoData.filter((elem) => elem.label.toLowerCase().startsWith(this.state.searchBy));
-        const filteredList = filterBy===undefined?
-            searchedList:
-            searchedList.filter((elem) => elem.done===filterBy);
+        const visibleItems = this.filter(this.search(todoData, searchBy), filterBy);
+
         return (
             <div className="todo-app">
                 <AppHeader toDo = {todoCount} done = {doneCount} />
                 <div className="top-panel d-flex">
-                    <SearchPanel onSearch={this.onSearch}/>
-                    <ItemStatusFilter onFilter={this.onFilter}/>
+                    <SearchPanel onSearchChange={this.onSearchChange}/>
+                    <ItemStatusFilter onFilterChange={this.onFilterChange}
+                                      filterBy={filterBy}
+                    />
                 </div>
-                <ToDoList todos = {filteredList}
+                <ToDoList todos = {visibleItems}
                           onToggleStatus = {this.onToggleStatus}
                 />
                 <AddItemForm onHandleChange={this.onHandleChange}
